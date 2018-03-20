@@ -1,0 +1,91 @@
+#!/bin/bash
+
+#----------------------
+### git-repository ###
+#----------------------
+# Usage: 
+#   $ git-repository {[create|remove|url] <repository> | list <option>}
+#
+# Commands:
+#    create  create a repository on git server
+#    remove  remove <repository> from git server (only root)
+# 	 url     get the url of <repository>
+#    list    list all repositories via using \`ls,
+#            you can add `ls option behined it
+#
+# By Bassy 2016/7/10
+
+errmsg="\
+Usage: git-repository {[create|remove|url] <repository> | list <option>}\n
+Commands:
+   create  create a repository on git server
+   remove  remove <repository> from git server (only root)
+   url     get the url of <repository>
+   list    list all repositories via using \`ls,
+           you can add \`ls option behined it"
+path=/var/git
+option=""
+hostname="localhost"
+
+if [ $# -le 2 ]; then
+	case "$1" in
+		create)
+			if [ "$2" = "" ]; then
+				echo "Usage: git-repository create <repository>"
+			## repository has been existed
+			elif [ -d "${path}/$2.git" ]; then
+				echo "Failed: '$2' has been existed."
+			## repository does not exist
+			else
+				mkdir ${path}/$2.git
+				cd ${path}/$2.git
+				git --bare init > /dev/null
+				chgrp -R git ${path}/$2.git
+				chmod -R g+rwx ${path}/$2.git
+				echo "'$2' created successfully!"
+				echo "The remote url:"
+				url="ssh://${USER}@${hostname}${path}/$2.git/"
+				echo "  '${url}'"
+				echo "to use the remote repository, for example:"
+				echo "$ git clone ${url}"
+			fi
+			;;
+		remove)
+			if [ -d "${path}/$2.git" ]; then
+				read -p "Remove the whole '$2' repository? [y/N] " ans
+				if [ "$ans" = "y" ] || [ "$ans" = "Y" ]; then
+					sudo rm -rf ${path}/$2.git
+					if [ $? -eq 0 ]; then
+						echo "'$2' removed completely."
+					else
+						echo "Remove failed."
+					fi
+				else
+					echo "Cancel"
+				fi
+			else
+				echo "Failed: Cannot find the repository."
+			fi
+			;;
+		url)
+			if [ -d "${path}/$2.git" ]; then
+				url="ssh://${USER}@${hostname}${path}/$2.git/"
+				echo "${url}"
+			else
+				echo "Failed: Cannot find the repository."
+			fi
+			;;
+		list)
+			if [ "$2" = "" ]; then
+				ls ${option} ${path}
+			else
+				ls $2 ${path}
+			fi
+			;;
+		*)
+			echo -e "$errmsg"
+	esac
+else
+	echo -e "$errmsg"
+fi
+unset errmsg path option hostname url ans

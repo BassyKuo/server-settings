@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Add deny hosts into /etc/hosts.deny from /var/log/fail2ban.log and /var/log/auth.log
+# (except 140.114.*)
+# ==== /etc/crond.daily/hosts-deny @ 2018/1/13 by Bass <aaammmyyy27@gmail.com> ====
+
+Date=$(date -d "yesterday" '+%Y %m %h %d')
+set $Date
+y=$1
+m=$2
+M=$3
+d=$4
+# hosts_deny=/etc/hosts.deny
+# report=/home/hosts-notice.report
+hosts_deny=$PWD/hosts.deny
+report=$PWD/hosts-notice.report
+
+# [hosts.deny] From /var/log/fail2ban.log
+fail_ips=$(zgrep "${y}-${m}-${d}.* Ban" /var/log/fail2ban.log* | awk '{print $8}' | grep -v '^140.114')
+
+# [hosts.deny] Repeated invalid users from /var/log/auth.log
+retry_ips=$(zgrep "^${M} ${d}.* Invalid user .*[0-9]$" /var/log/auth.log* | awk '{print $10}' | grep -v '^140.114' | uniq -d)
+# brute_force=$(zgrep "^${M} ${d}.* Invalid user .*\([aA]dmin\|root\|test\|ftp\|user\).*[0-9]$" /var/log/auth.log* | awk '{print $10}' | grep -v '^140.114')
+
+ban_ips=$(echo "$fail_ips $retry_ips $brute_force" | tr ' ' '\n' | awk 'NF>0{print $1}' | sort -n | uniq)
+echo "$ban_ips" | tr ' ' '\n' | awk '{print "ALL: "$1}' >> $hosts_deny
+
+# [hosts.notice] Invalid users login from /var/log/auth.log
+zgrep "^${M} ${d}.* Invalid user .*[0-9]$" /var/log/auth.log* | awk '{print "'$M' "$2" "$3"\t SSHd [Invalid User]: "$8"\t[ip]: "$10}' | sort >> $report
+echo -n "<== ${M} ${d} Ban ==>\n$ban_ips\n-----------------------------------------------------------------------\n" >> $report

@@ -1,0 +1,4 @@
+*.sw[op]
+*.pyc
+Miniconda*.sh
+Anaconda*.sh

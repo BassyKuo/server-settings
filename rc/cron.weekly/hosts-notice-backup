@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Back-up /home/hosts-notice.report
+# ==== /etc/crond.weekly/hosts-notice-backup @ 2018/1/13 by Bass <aaammmyyy27@gmail.com> ====
+
+report=/home/hosts-notice.report
+
+for i in $(seq 3 -1 1); do
+	mv $report.$i $report.$(($i+1))
+done
+mv $report $report.1
+touch $report

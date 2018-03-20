@@ -1,0 +1,82 @@
+#!/bin/bash
+
+#-------------------
+### git-members ###
+#-------------------
+# Usage: 
+#   $ git-members {[add|remove] <user> | list}
+#
+# Commands:
+#    add     add <user> to git group (only root)
+#    remove  remove <user> from git group (only root)
+#    list    list all git members
+#
+# By Bassy 2016/7/10
+
+errmsg="\
+Usage: git-members {[add|remove] <user> | list}\n
+Commands:
+   add     add <user> to git group (only root)
+   remove  remove <user> from git group (only root)
+   list    list all git members"
+
+if [ "$#" -le 2 ]; then
+	case "$1" in
+		add)
+			if [ "$2" = "" ]; then
+				 echo "no add member"
+			## User_account is nonempty
+			fi
+
+			#elif [ `getent passwd $2` ]; then
+			grep ^$2: /etc/passwd > /dev/null 2>&1
+			if [ $? -eq 0 ]; then
+				# return 0 (account exists)
+				sudo gpasswd -a $2 git
+				sudo grpconv
+				## Same as
+				#usermod -a -G git $2
+
+				## Also can set a list by using:
+				#gpasswd -M user1,user2,user3 git
+				echo "<Git Members>:"
+				awk -F':' '$1=="git" {print $4}' /etc/group
+			else
+				# return 1 (account not exist)
+				echo "Failed: Invalid account."
+			fi
+			;;
+		remove)
+			#if [ "$USER" != "root" ]; then
+			#	echo "Failed: Permission denied."
+			#	exit 0
+			#fi
+
+			if [ "$2" = "" ]; then
+				 echo "no remove member"
+			## User_account is nonempty
+			fi
+			
+			#elif [ `getent passwd $2` ]; then
+			grep ^$2: /etc/passwd > /dev/null 2>&1
+			if [ $?  -eq 0 ]; then
+				# return 0 (account exists)
+				sudo gpasswd -d $2 git
+				sudo grpconv
+				echo "<Git Members>:"
+				awk -F':' '$1=="git" {print $4}' /etc/group
+			else
+				# return 1 (account not exist)
+				echo "Failed: Invalid account."
+			fi
+			;;
+		list)
+			awk -F':' '$1=="git" {print $4}' /etc/group
+			;;
+		*)
+			echo -e "$errmsg"
+	esac
+else
+	echo -e "$errmsg"
+fi
+unset errmsg 
