@@ -65,12 +65,22 @@ cp $HOME/.vim/bundle/onehalf/vim/colors/onehalfdark.vim $HOME/.vim/colors/
 # Colorscheme: Afterglow theme
 echo "$BOLD$YELLOW>> Afterglow$RESET"
 cd $HOME/.vim/bundle
-git clone https://github.com/danilo-augusto/vim-afterglow
+#git clone https://github.com/danilo-augusto/vim-afterglow
 ## patch
 f="vim-afterglow/colors/afterglow.vim"
-sed -i 32i'let s:darkgreen = "788951"' $f
-sed -i s'/\(pythonInclude.*\)s:green\(.*\)italic/\1s:darkgreen\2/'g $f
-sed -i s'/\(pythonFunction.*\)italic/\1/'g $f
+if which sw_vers > /dev/null; then
+    # For MacOs
+    mv $f $f.orig
+    sed $'32i\
+        let s:darkgreen = "788951"\n' $f.orig | \
+    sed 's/\(pythonInclude.*\)s:green\(.*\)italic/\1s:darkgreen\2/g' | \
+    sed 's/\(pythonFunction.*\)italic/\1/g' > $f
+else
+    # For Linux
+    sed -i 32i'let s:darkgreen = "788951"' $f
+    sed -i s'/\(pythonInclude.*\)s:green\(.*\)italic/\1s:darkgreen\2/'g $f
+    sed -i s'/\(pythonFunction.*\)italic/\1/'g $f
+fi
 
 # Colorscheme: Dracula theme
 echo "$BOLD$YELLOW>> Dracula$RESET"

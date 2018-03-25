@@ -30,7 +30,7 @@ if ! which brew > /dev/null; then
 fi
 
 # Install useful packages
-brew install ssh-copy-id python3 ipython git
+brew install ssh-copy-id python3 ipython git cmake cmocka
 
 # Add File
 echo "Add Files..."
