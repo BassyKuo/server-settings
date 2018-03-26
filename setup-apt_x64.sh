@@ -4,32 +4,35 @@
 ###             FOR SUDO USERS EXECUTING              ###
 #--------------------------------------------------------
 # Install: [root]
-#	vim git python-scipy python-dev python-pip python-nose gcc g++
-#	libopenblas-dev openssh-server fail2ban python-opencv python-opencv
-#	samba screen autoconf automake libtool curl make unzip
+#    vim git python-scipy python-dev python-pip python-nose gcc g++
+#    libopenblas-dev openssh-server fail2ban python-opencv python-opencv
+#    samba screen autoconf automake libtool curl make unzip
+#    smartmontools python3.6 python3-pip
 #
 # Pip install:
-#	virtualenv numpy scipy nose opencv-python
+#    virtualenv numpy scipy nose opencv-python
 #
 # General Setting:
-#	selected_editor="/usr/bin/vim.basic" > /root/.selected_editor
+#    selected_editor="/usr/bin/vim.basic" > /root/.selected_editor
 #
 # Setting:
-#	sshd-setup
-#	fail2ban
-#	samba
-#	Torch
+#    sshd-setup
+#    fail2ban
+#    samba
+#    Torch
 #
-### Written by Bassy<aaammmyyy27@gmail.com> 2017/11/18 v.3.5.3
+### Written by Bassy<aaammmyyy27@gmail.com> 2018/03/27 v.3.5.4
 
 # Insatll
 echo "Install Package ...."
 echo "> sudo apt-get update [need root]"
 if [ $USER = root ]; then
-	sudo apt-get update && sudo apt-get upgrade -y
-	sudo apt-get install -y vim git python-numpy python-scipy python-dev python-pip python-nose \
-		gcc g++ libopenblas-dev openssh-server python-opencv samba screen \
-		autoconf automake libtool curl make unzip
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt-get update && sudo apt-get upgrade -y
+    sudo apt-get install -y vim git python-numpy python-scipy python-dev python-pip python-nose \
+        gcc g++ libopenblas-dev openssh-server python-opencv samba screen \
+        autoconf automake libtool curl make unzip \
+        smartmontools python3.6 python3-pip
 fi
 echo
 
@@ -47,11 +50,11 @@ echo
 # SSHd setting [root]
 read -p "Modify sshd setting [need root]? [y/N] " ans_sshd
 if [[ $ans_sshd =~ ^[yY]+$ ]]; then
-	read -p "Enter the port number for this server: [22] " pt
-	! [[ $pt =~ ^[0-9]{1,5}$ ]] && pt=22
-	test -e setup/sshd-setup.sh && bash setup/sshd-setup.sh $pt
-	echo
-	echo "Set sshd completely."
+    read -p "Enter the port number for this server: [22] " pt
+    ! [[ $pt =~ ^[0-9]{1,5}$ ]] && pt=22
+    test -e setup/sshd-setup.sh && bash setup/sshd-setup.sh $pt
+    echo
+    echo "Set sshd completely."
 fi
 echo
 
@@ -59,34 +62,34 @@ echo
 # (from: https://www.linode.com/docs/security/using-fail2ban-for-security)
 read -p "Setup Fail2ban [nead root]? [Y/n] " ans_f2b
 if [[ $ans_f2b =~ ^[yY]*$ ]]; then
-	sudo apt-get update && sudo apt-get upgrade -y
-	sudo apt-get install -y fail2ban
-	#sudo ufw allow ssh
-	#sudo ufw enable
-	sudo cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
-	sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-	#sed -i "s/\(ignoreip = .*$\)/\1 140\.114\.75\.33/g" /etc/fail2ban/jail.local
-	sudo sed -i "s/\(bantime  = \)600$/\199999/g" /etc/fail2ban/jail.local
-	sudo service fail2ban restart
-	echo
-	echo "Install fail2ban completely."
+    sudo apt-get update && sudo apt-get upgrade -y
+    sudo apt-get install -y fail2ban
+    #sudo ufw allow ssh
+    #sudo ufw enable
+    sudo cp /etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.local
+    sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+    #sed -i "s/\(ignoreip = .*$\)/\1 140\.114\.75\.33/g" /etc/fail2ban/jail.local
+    sudo sed -i "s/\(bantime  = \)600$/\199999/g" /etc/fail2ban/jail.local
+    sudo service fail2ban restart
+    echo
+    echo "Install fail2ban completely."
 fi
 echo
 
 # Samba settings [root]
 read -p "Setup Samba [need root]? [Y/n] " ans_smb
 if [[ $ans_smb =~ ^[yY]*$ ]]; then
-	sudo apt-get update && sudo apt-get upgrade -y
-	sudo apt-get install -y samba
-	sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.sample
-	sudo cp rc/smb.conf /etc/samba/smb.conf
-	sudo ulimit -n 16384
-	sudo service smbd retsart
-	test -e setup/smbpasswd.sh && bash setup/smbpasswd.sh
-	echo
-	echo "Setup samba completely."
-	echo "Now you can connect samba: 'smb://<this_server_ip>'. If you have"
-	echo "any problem (e.g. connection rejected), try to reboot the server."
+    sudo apt-get update && sudo apt-get upgrade -y
+    sudo apt-get install -y samba
+    sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.sample
+    sudo cp rc/smb.conf /etc/samba/smb.conf
+    sudo ulimit -n 16384
+    sudo service smbd retsart
+    test -e setup/smbpasswd.sh && bash setup/smbpasswd.sh
+    echo
+    echo "Setup samba completely."
+    echo "Now you can connect samba: 'smb://<this_server_ip>'. If you have"
+    echo "any problem (e.g. connection rejected), try to reboot the server."
 fi
 echo
 
@@ -100,15 +103,15 @@ unzip gnuplot gnuplot-x11 ipython
 [Y/n] " ans_torch
 
 if [[ $ans_torch =~ ^[yY]*$ ]]; then
-	cd /usr/share/; sudo git clone https://github.com/torch/distro.git torch --recursive
-	cd torch; sudo bash install-deps;
-	sudo ./install.sh
-	sudo echo "# Torch tool install" >> /etc/bash.bashrc
-	sudo echo ". /usr/share/torch/install/bin/torch-activate" >> /etc/bash.bashrc
-	sudo apt autoremove -y
-	echo
-	echo "Install torch completely."
-	echo "Please re-login, then you can use \`th\` to run torch :)"
+    cd /usr/share/; sudo git clone https://github.com/torch/distro.git torch --recursive
+    cd torch; sudo bash install-deps;
+    sudo ./install.sh
+    sudo echo "# Torch tool install" >> /etc/bash.bashrc
+    sudo echo ". /usr/share/torch/install/bin/torch-activate" >> /etc/bash.bashrc
+    sudo apt autoremove -y
+    echo
+    echo "Install torch completely."
+    echo "Please re-login, then you can use \`th\` to run torch :)"
 fi
 echo
 
