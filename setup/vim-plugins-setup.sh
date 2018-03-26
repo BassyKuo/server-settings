@@ -65,8 +65,8 @@ cp $HOME/.vim/bundle/onehalf/vim/colors/onehalfdark.vim $HOME/.vim/colors/
 # Colorscheme: Afterglow theme
 echo "$BOLD$YELLOW>> Afterglow$RESET"
 cd $HOME/.vim/bundle
-#git clone https://github.com/danilo-augusto/vim-afterglow
-## patch
+git clone https://github.com/danilo-augusto/vim-afterglow
+# patch
 f="vim-afterglow/colors/afterglow.vim"
 if which sw_vers > /dev/null; then
     # For MacOs
