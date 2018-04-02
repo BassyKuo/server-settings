@@ -51,46 +51,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-# Colorizing Shell Script
-# =========Colors=========
-#		Fg	Bg
-# Black		30	40
-# Red		31	41
-# Green		32	42
-# Yellow	33	43
-# Blue		34	44
-# Purple	35	45
-# Cyan		36	46
-# White		37	47
-# =========Styles=========
-#	0	Normal
-# 	1	Bold
-# 	4	Underlined
-# 	5	Blinking
-# 	7	Reverse video	
-
-# Prompt
-IP=$(curl http://checkip.amazonaws.com/ 2> /dev/null)
-if [ "$color_prompt" = yes ]; then
-    if [ "$color_mode" = 256 ]; then
-        PS1='\[\e[4;38;5;228m\]\u\[\e[38;5;160m\] \h-${IP}\[\e[0m\] \[\e[0;38;5;87m\]\w\[\e[0m\] \$ '
-    else
-        PS1='\[\e[0;33m\]\u\[\e[0;32m\][\h:${IP}]:\[\e[0;36m\]\w\[\e[0m\] \$ '
-    fi
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt color_mode
-
-# If this is an xterm set the title to user@host:dir
-#case "$TERM" in
-#xterm*|rxvt*)
-#    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-#    ;;
-#*)
-#    ;;
-#esac
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -134,12 +94,55 @@ fi
 #fi
 
 # ----------------------------------------------------------------------------
+# Colorizing Shell Script
+# =========Colors=========
+#		Fg	Bg
+# Black		30	40
+# Red		31	41
+# Green		32	42
+# Yellow	33	43
+# Blue		34	44
+# Purple	35	45
+# Cyan		36	46
+# White		37	47
+# =========Styles=========
+#	0	Normal
+# 	1	Bold
+# 	4	Underlined
+# 	5	Blinking
+# 	7	Reverse video	
 
-PS1="$(echo $PS1 | sed s'/ *\([#\$]\+\) *$/ ${git_info}\1 /'g)"     # git_info() from ~/.bash_aliases
+# Prompt
+IP=$(curl http://checkip.amazonaws.com/ 2> /dev/null)
+if [ "$color_prompt" = yes ]; then
+    if [ "$color_mode" = 256 ]; then
+        PS1='\[\e[38;5;226m\]\u\[\e[38;5;208m\][\h-${IP}]:\[\e[0m\]\[\e[0;38;5;87m\]\w\[\e[0m\] '
+    else
+        PS1='\[\e[0;33m\]\u\[\e[0;32m\][\h:${IP}]:\[\e[0;36m\]\w\[\e[0m\] '
+    fi
+    PS1=$PS1'\e[1;35m$(git_branch)\e[0;35m$(git_since_last_commit)\e[0m'
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w'
+fi
+PS1=$PS1"\$ "
+unset color_prompt force_color_prompt color_mode
+
+# If this is an xterm set the title to user@host:dir
+#case "$TERM" in
+#xterm*|rxvt*)
+#    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+#    ;;
+#*)
+#    ;;
+#esac
+
+# ----------------------------------------------------------------------------
+
+#PS1="$(echo $PS1 | sed s'/ *\([#\$]\+\) *$/ ${git_info}\1 /'g)"     # git_info() from ~/.bash_aliases
 
 # Search First-matching History Command"
 bind '"\x1b\x5b\x41":history-search-backward'
 bind '"\x1b\x5b\x42":history-search-forward'
 
 # added $HOME/bin
-export PATH="$PATH:$HOME/bin"
+export PATH="$PATH:$HOME/bin:$HOME/.local/bin"

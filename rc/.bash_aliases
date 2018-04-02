@@ -61,19 +61,19 @@ function trash {
 
 # ---[ add git info
 function git_branch {
-	ref=$(git symbolic-ref HEAD 2> /dev/null) || return;
-	echo "("${ref#refs/heads/}") ";
+    ref=$(git symbolic-ref HEAD 2> /dev/null) || return;
+    echo "("${ref#refs/heads/}") ";
 }
 function git_since_last_commit {
-	now=`date +%s`;
-	last_commit=$(git log --pretty=format:%at -1 2> /dev/null) || return;
-	seconds_since_last_commit=$((now-last_commit));
-	minutes_since_last_commit=$((seconds_since_last_commit/60));
-	hours_since_last_commit=$((minutes_since_last_commit/60));
-	minutes_since_last_commit=$((minutes_since_last_commit%60));
-	echo "${hours_since_last_commit}h ${minutes_since_last_commit}m "
+    now=`date +%s`;
+    last_commit=$(git log --pretty=format:%at -1 2> /dev/null) || return;
+    seconds_since_last_commit=$((now-last_commit));
+    minutes_since_last_commit=$((seconds_since_last_commit/60));
+    hours_since_last_commit=$((minutes_since_last_commit/60));
+    minutes_since_last_commit=$((minutes_since_last_commit%60));
+    echo "${hours_since_last_commit}h ${minutes_since_last_commit}m "
 }
-git_info=$(echo -e "\e[1;35m$(git_branch)\e[0;35m$(git_since_last_commit)\e[0m")
+#git_info=$(echo -e "\e[1;35m$(git_branch)\e[0;35m$(git_since_last_commit)\e[0m")
 #PS1="$(echo $PS1 | sed s'/ *\([#\$]\+\) *$/ ${git_info}\1 /'g)"     # git_info() from ~/.bash_aliases
 
 # ---[ show hdd_status.log
@@ -100,3 +100,5 @@ function show_hdd_health {
 
 # ---[ other aliases
 #alias matlab='/usr/local/R2017a/bin/matlab -nojvm -nodisplay -nosplash'
+alias pip='pip3'
+alias python='python3'
