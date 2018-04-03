@@ -41,29 +41,7 @@ fi
 echo
 
 # Install Anaconda
-read -p "Install [A]naconda / [M]iniconda ? [A/m/n] " ans_conda
-if [[ $ans_conda =~ ^[aA]*$ ]]; then
-    curl -O https://repo.continuum.io/archive/Anaconda3-5.1.0-Linux-x86_64.sh
-    bash Anaconda3-*.sh
-    rm Anaconda3-*.sh
-elif [[ $ans_conda =~ ^[mM]+$ ]]; then
-    curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    bash Miniconda3-*.sh
-    rm Miniconda3-*.sh
-    sed -i'.bak' '/miniconda3/d' $HOME/.bash_profile
-    echo ". $HOME/miniconda3/etc/profile.d/conda.sh" >> $HOME/.bash_profile
-    rm $HOME/.bash_profile.bak
-fi
-if [[ $ans_conda =~ ^[aAmM]*$ ]]; then
-    source $HOME/.bash_profile
-    source $HOME/.bashrc
-    conda update conda
-    echo
-    echo "Use the command to setup your conda environment:"
-    echo "   $ conda create -n <yourenvname> python=<x.x> anaconda"
-    echo "Or you can find more usage over here: https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/"
-fi
-echo
+bash setup/conda-setup.sh
 
 # Pip install
 read -p "pip install packages with [C]onda-env or system-[U]ser-env? [C/u/n] " ans_pip
