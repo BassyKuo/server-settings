@@ -110,7 +110,7 @@ fi
 IP=$(curl http://checkip.amazonaws.com/ 2> /dev/null)
 if [ "$color_prompt" = yes ]; then
     if [ "$color_mode" = 256 ]; then
-        PS1='\[\e[38;5;226m\]\u\[\e[38;5;208m\][\h-${IP}]:\[\e[0m\]\[\e[0;38;5;87m\]\w\[\e[0m\] \[\e[1;35m\]$(git_branch)\[\e[0;35m\]$(git_since_last_commit)\[\e[0m\]\$ '
+        PS1='\[\e[4;38;5;120m\]\u\[\e[38;5;203m\] \h-${IP}] \[\e[0m\]\[\e[0;38;5;215m\]\w\[\e[0m\] \[\e[1;35m\]$(git_branch)\[\e[0;35m\]$(git_since_last_commit)\[\e[0m\]\$ '
     else
         PS1='\[\e[0;33m\]\u\[\e[0;32m\][\h:${IP}]:\[\e[0;36m\]\w\[\e[0m\] \[\e[1;35m\]$(git_branch)\[\e[0;35m\]$(git_since_last_commit)\[\e[0m\]\$ '
     fi
