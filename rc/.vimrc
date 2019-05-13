@@ -127,7 +127,7 @@ nnoremap <space> :noh<CR>
 nnoremap <silent> - yypVr-
 
 " Visual-mode Remap
-"vnoremap
+vnoremap <silent> <space> :g/^ *$/d<CR>:noh<CR>
 
 " Insert-mode Remap
 "inoremap <F5> <ESC>yyp<C-v>$r-A
