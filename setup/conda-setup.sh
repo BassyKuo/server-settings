@@ -2,7 +2,7 @@
 
 read -p "Install [A]naconda / [M]iniconda ? [A/m/n] " ans_conda
 if [[ $ans_conda =~ ^[aA]*$ ]]; then
-    curl -O https://repo.continuum.io/archive/Anaconda3-5.1.0-Linux-x86_64.sh
+    curl -O https://repo.continuum.io/archive/Anaconda3-5.2.0-Linux-x86_64.sh
     bash Anaconda3-*.sh
     rm Anaconda3-*.sh
     conda_home=$HOME/anaconda3
