@@ -124,7 +124,7 @@ autocmd FileType taglist set nocursorcolumn
 nnoremap \ :set nocursorline nocursorcolumn<CR>
 nnoremap = :set cursorline cursorcolumn<CR>
 nnoremap <space> :noh<CR>
-nnoremap <silent> - yypVr-
+nnoremap <silent> - yypVr=
 
 " Visual-mode Remap
 vnoremap <silent> <space> :g/^ *$/d<CR>:noh<CR>
