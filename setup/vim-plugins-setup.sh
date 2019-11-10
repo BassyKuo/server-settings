@@ -93,7 +93,7 @@ cd $HOME/.vim/bundle
 git clone --recursive https://github.com/bf4/vim-dark_eyes.git vim-dark_eyes
 
 # Colorscheme: TabNine
-echo "$BOLD$YELLOW>> Dark_eyes$RESET"
+echo "$BOLD$YELLOW>> TabeNine$RESET"
 cd $HOME/.vim/bundle
 git clone https://github.com/zxqfl/tabnine-vim.git
 
